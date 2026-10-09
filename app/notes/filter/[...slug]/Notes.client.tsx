@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect,useState } from 'react';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useDebounce } from 'use-debounce';
 import { fetchNotes } from '@/lib/api';
@@ -21,6 +21,9 @@ export default function NotesClient({
 }: NotesClientProps) {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  useEffect(() => {
+  setPage(1);
+}, [tag]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const perPage = 8;
 

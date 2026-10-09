@@ -1,18 +1,19 @@
 
 import type { ReactNode } from 'react';
-import SidebarNotes from '@/components/SidebarNotes/SidebarNotes';
 import css from './layout.module.css';
 
 type FilterLayoutProps = {
   children: ReactNode;
+  sidebar: ReactNode;
 };
 
 export default function FilterLayout({
   children,
+  sidebar,
 }: FilterLayoutProps) {
   return (
     <section className={css.container}>
-      <SidebarNotes />
+      <aside className={css.sidebar}>{sidebar}</aside>
       <div className={css.notesWrapper}>{children}</div>
     </section>
   );
