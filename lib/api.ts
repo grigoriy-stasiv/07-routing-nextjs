@@ -14,20 +14,32 @@ instance.interceptors.request.use((config) => {
   return config;
 });
 
+
 export const fetchNotes = async ({
   page,
   perPage,
   search,
+  tag,
 }: {
   page: number;
   perPage: number;
   search: string;
+  tag?: string;
 }): Promise<FetchNotesResponse> => {
   const params: Record<string, string | number> = { page, perPage };
+
   if (search.trim()) {
     params.search = search;
   }
-  const { data } = await instance.get<FetchNotesResponse>('/', { params });
+
+  if (tag && tag !== 'all') {
+    params.tag = tag;
+  }
+
+  const { data } = await instance.get<FetchNotesResponse>('/', {
+    params,
+  });
+
   return data;
 };
 

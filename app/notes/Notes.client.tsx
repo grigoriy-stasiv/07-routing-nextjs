@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -11,7 +12,13 @@ import Modal from '@/components/Modal/Modal';
 import { NoteForm } from '@/components/NoteForm/NoteForm';
 import css from './page.module.css';
 
-export default function NotesClient() {
+type NotesClientProps = {
+  tag?: string;
+};
+
+export default function NotesClient({
+  tag = 'all',
+}: NotesClientProps) {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,40 +27,63 @@ export default function NotesClient() {
   const [debouncedSearch] = useDebounce(search, 500);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['notes', { page, perPage, search: debouncedSearch }],
-    queryFn: () => fetchNotes({ page, perPage, search: debouncedSearch }),
-    placeholderData: keepPreviousData, 
+    queryKey: [
+      'notes',
+      { page, perPage, search: debouncedSearch, tag },
+    ],
+    queryFn: () =>
+      fetchNotes({
+        page,
+        perPage,
+        search: debouncedSearch,
+        tag,
+      }),
+    placeholderData: keepPreviousData,
   });
 
-  if (error) return <p className={css.error || ''}>Сталася помилка при завантаженні нотаток.</p>;
+  if (error) {
+    return (
+      <p className={css.error || ''}>
+        Сталася помилка при завантаженні нотаток.
+      </p>
+    );
+  }
 
   const notesList = data?.notes || [];
   const totalPages = data?.totalPages || 1;
 
   return (
     <div className={css.container || css.notesPage || ''}>
-      
-      {}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', gap: '20px', width: '100%' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: '30px',
+          gap: '20px',
+          width: '100%',
+        }}
+      >
         <div style={{ width: '300px' }}>
-          {}
-          <SearchBox onChange={(value) => {
-            setSearch(value);
-            setPage(1); 
-          }} />
+          <SearchBox
+            onChange={(value) => {
+              setSearch(value);
+              setPage(1);
+            }}
+          />
         </div>
 
         {totalPages > 1 && (
-          <Pagination 
-            pageCount={totalPages} 
+          <Pagination
+            pageCount={totalPages}
             onPageChange={(selectedPage: number) => {
               setPage(selectedPage);
-            }} 
-            forcePage={page} 
+            }}
+            forcePage={page}
           />
         )}
 
-        <button 
+        <button
           type="button"
           onClick={() => setIsModalOpen(true)}
           className={css.button || css.createButton || ''}
@@ -62,14 +92,14 @@ export default function NotesClient() {
         </button>
       </div>
 
-      {}
       {isLoading ? (
-        <p className={css.loading || ''}>Завантаження нотаток...</p>
+        <p className={css.loading || ''}>
+          Завантаження нотаток...
+        </p>
       ) : (
         <NoteList notes={notesList} />
       )}
 
-      {}
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
           <NoteForm onCancel={() => setIsModalOpen(false)} />
