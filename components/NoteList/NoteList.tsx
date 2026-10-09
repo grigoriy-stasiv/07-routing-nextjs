@@ -1,3 +1,6 @@
+'use client'
+
+
 import Link from 'next/link';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteNote } from '@/lib/api'; 
@@ -34,11 +37,7 @@ export default function NoteList({ notes }: NoteListProps) {
             <span className={css.tag}>{note.tag}</span>
 
             <div style={{ display: 'flex', gap: '10px' }}>
-              <Link href={`/notes/${note.id}`}>
-                <button type="button" className={css.link}>
-                  View details
-                </button>
-              </Link>
+              <Link href={`/notes/${note.id}`} className={css.link} > View details </Link>
 
               {}
               <button 
